@@ -17,6 +17,10 @@ namespace shoryutrain // Application namespace
         private Controller xinputController; // Controller object for XInput
         private System.Windows.Forms.Timer inputPollTimer; // Timer to poll inputs
         private bool useDirectInput = false; // Default to XInput
+
+        //DirectInput un-fucking
+        private int calibrationX = 0;
+        private int calibrationY = 0;
         public Form1()
         {
 
@@ -130,13 +134,15 @@ namespace shoryutrain // Application namespace
 
                     joystick.Poll(); // Poll the joystick for its current state
                     var state = joystick.GetCurrentState(); // Get the current state of the joystick
-                    /*
-                     - 32767 is a hack to unfuck the thumbstick values for directInput
-                    */
-                    int x = state.X - 32767; // Get the X axis value
-                    int rawY = state.Y - 32767; // Get the Y axis value
-                    int y = -rawY;
 
+                    /* DirectInput likes to fuck itself up when its in a neutral position, 
+                     * so if you press the N button while someone is not touching it, 
+                     it sets a value that serves as a "Calibration value". 
+                     Said calibration value gets subtracted from the offset value that is
+                     DirectInput reading X and Y.*/
+                    int x = state.X  - calibrationX; 
+                    int invertY = state.Y - calibrationY;
+                    int y = -invertY;
                     /*
                      I need to figure out a way to map the DPAD of an DirectInput controller accurately.
                      Since the bitfield value for controller input values differ across various manufacturers 
@@ -164,7 +170,7 @@ namespace shoryutrain // Application namespace
                     {
                         return; // Exit if XInput controller is not initialized or not connected
                     }
-                    
+
                     var state = xinputController.GetState(); // Get the current state of the XInput controller
                     int x = state.Gamepad.LeftThumbX; // Get the X axis value of the left thumbstick
                     int y = state.Gamepad.LeftThumbY; // Get the Y axis value of the left thumbstick
@@ -186,6 +192,24 @@ namespace shoryutrain // Application namespace
             catch (Exception ex) //what
             {
                 MessageBox.Show($"An error occurred while polling the controller: {ex.Message}"); // Show error message if polling fails
+            }
+        }
+        private void directInputNeutralSetter_Click(object sender, EventArgs e)
+        {
+            if (joystick != null) // Ensure the joystick is initialized
+            {
+                joystick.Poll(); // Poll the joystick for its current state
+                var state = joystick.GetCurrentState(); // Get the current state of the joystick
+
+                // Set calibration values to the current X and Y, but negative
+                calibrationX = state.X;
+                calibrationY = state.Y;
+
+                MessageBox.Show($"Neutral position set: X = {calibrationX}, Y = {calibrationY}");
+            }
+            else
+            {
+                MessageBox.Show("Joystick is not initialized.");
             }
         }
 
@@ -334,5 +358,7 @@ namespace shoryutrain // Application namespace
         {
 
         }
+
+        
     }
 }

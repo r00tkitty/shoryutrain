@@ -52,6 +52,8 @@
             button5 = new Button();
             button6 = new Button();
             connectedControllerName = new TextBox();
+            directInputNeutralSetter = new Button();
+            directNeutralLabel = new Label();
             inputHandlerSelector = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -217,7 +219,7 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Right;
-            button1.Location = new Point(469, 96);
+            button1.Location = new Point(469, 100);
             button1.Name = "button1";
             button1.Size = new Size(75, 75);
             button1.TabIndex = 10;
@@ -227,7 +229,7 @@
             // button2
             // 
             button2.Anchor = AnchorStyles.Right;
-            button2.Location = new Point(550, 96);
+            button2.Location = new Point(550, 100);
             button2.Name = "button2";
             button2.Size = new Size(75, 75);
             button2.TabIndex = 11;
@@ -237,7 +239,7 @@
             // button3
             // 
             button3.Anchor = AnchorStyles.Right;
-            button3.Location = new Point(631, 96);
+            button3.Location = new Point(631, 100);
             button3.Name = "button3";
             button3.Size = new Size(75, 75);
             button3.TabIndex = 12;
@@ -247,7 +249,7 @@
             // button4
             // 
             button4.Anchor = AnchorStyles.Right;
-            button4.Location = new Point(469, 177);
+            button4.Location = new Point(469, 181);
             button4.Name = "button4";
             button4.Size = new Size(75, 75);
             button4.TabIndex = 13;
@@ -257,7 +259,7 @@
             // button5
             // 
             button5.Anchor = AnchorStyles.Right;
-            button5.Location = new Point(550, 177);
+            button5.Location = new Point(550, 181);
             button5.Name = "button5";
             button5.Size = new Size(75, 75);
             button5.TabIndex = 14;
@@ -267,7 +269,7 @@
             // button6
             // 
             button6.Anchor = AnchorStyles.Right;
-            button6.Location = new Point(631, 177);
+            button6.Location = new Point(631, 181);
             button6.Name = "button6";
             button6.Size = new Size(75, 75);
             button6.TabIndex = 15;
@@ -277,18 +279,39 @@
             // connectedControllerName
             // 
             connectedControllerName.BorderStyle = BorderStyle.FixedSingle;
-            connectedControllerName.Location = new Point(13, 359);
+            connectedControllerName.Location = new Point(12, 345);
             connectedControllerName.Name = "connectedControllerName";
             connectedControllerName.ReadOnly = true;
             connectedControllerName.Size = new Size(312, 23);
             connectedControllerName.TabIndex = 16;
             connectedControllerName.TextChanged += connectedControllerName_TextChanged;
             // 
+            // directInputNeutralSetter
+            // 
+            directInputNeutralSetter.Location = new Point(12, 374);
+            directInputNeutralSetter.Name = "directInputNeutralSetter";
+            directInputNeutralSetter.Size = new Size(23, 23);
+            directInputNeutralSetter.TabIndex = 17;
+            directInputNeutralSetter.Text = "N";
+            directInputNeutralSetter.UseVisualStyleBackColor = true;
+            directInputNeutralSetter.Click += directInputNeutralSetter_Click;
+            // 
+            // directNeutralLabel
+            // 
+            directNeutralLabel.AutoSize = true;
+            directNeutralLabel.Location = new Point(41, 378);
+            directNeutralLabel.Name = "directNeutralLabel";
+            directNeutralLabel.Size = new Size(209, 15);
+            directNeutralLabel.TabIndex = 18;
+            directNeutralLabel.Text = "Set Neutral position (DirectInput Only)";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(718, 394);
+            ClientSize = new Size(718, 402);
+            Controls.Add(directNeutralLabel);
+            Controls.Add(directInputNeutralSetter);
             Controls.Add(connectedControllerName);
             Controls.Add(button6);
             Controls.Add(button5);
@@ -345,5 +368,7 @@
         private Button button5;
         private Button button6;
         private TextBox connectedControllerName;
+        private Button directInputNeutralSetter;
+        private Label directNeutralLabel;
     }
 }
