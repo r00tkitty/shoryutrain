@@ -17,7 +17,7 @@ Motion input training for people that are new to playing fighting games.
 - And more!
 
 ## To-Do list
-- [ ]  Fix DirectInput bug.
+- [x]  Fix DirectInput bug.
 - [ ]  Settings menu
 - [ ]  Custom keybinding
 - [ ]  Input history display
@@ -25,8 +25,6 @@ Motion input training for people that are new to playing fighting games.
 - [ ]  Move list per game
 - [ ]  General layout improvements
 - [ ]  Updater (?)
-## Known issues
-- DirectInput is completely botched right now. Will fix soon.
 ## Support
 
 For support, join the discord at https://discord.gg/tr927SxNDh
