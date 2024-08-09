@@ -1,20 +1,21 @@
-using SharpDX.DirectInput;
-using SharpDX.XInput;
-using System;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing.Text;
-using System.Windows.Forms;
+using SharpDX.DirectInput; //DirectInput support
+using SharpDX.XInput; //XInput support
+using System; // General shit
+using System.Diagnostics; // Debug shit
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Eventing.Reader; // more debug shit
+using System.Drawing.Text; // Draw shit
+using System.Windows.Forms; // UI
 
-namespace shoryutrain
+namespace shoryutrain // Application namespace
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form // Define the Form1 class that inherits from Form, making it a Windows Form
     {
         private const int Deadzone = 20000; // Define a deadzone constant value
-        private DirectInput directInput;
-        private Joystick joystick;  
+        private DirectInput directInput; // Make DirectInput object to handle DirectInput
+        private Joystick joystick;  // Joystick for DirectInput joystick info
         private Controller xinputController; // Controller object for XInput
-        private System.Windows.Forms.Timer inputPollTimer;
+        private System.Windows.Forms.Timer inputPollTimer; // Timer to poll inputs
         private bool useDirectInput = false; // Default to XInput
         public Form1()
         {
@@ -24,31 +25,31 @@ namespace shoryutrain
             InitializeTimer();
         }
 
-        private void InitController()
+        private void InitController() // Initialize controllers
         {
             try
             {
-                if (useDirectInput)
+                if (useDirectInput) //If directInput is selected, then initialize controller as a DirectInput controller
                 {
                     InitializeDirectInputController();
                 }
-                else
+                else // otherwise, just init it as a XInput
                 {
                     InitializeXInputController();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) // what the fuck
             {
                 MessageBox.Show($"An error occurred while initializing the controller: {ex.Message}"); // Show error message if initialization fails
             }
         }
 
-        private void InitializeDirectInputController()
+        private void InitializeDirectInputController() // initialize DirectInput controller
         {
             directInput = new DirectInput(); // Initialize DirectInput
             var joystickGuid = Guid.Empty; // Initialize GUID for joystick
 
-            foreach (var deviceInstance in directInput.GetDevices(SharpDX.DirectInput.DeviceType.Gamepad, DeviceEnumerationFlags.AllDevices)) // Enumerate all connected gamepads
+            foreach (var deviceInstance in directInput.GetDevices(SharpDX.DirectInput.DeviceType.Gamepad, DeviceEnumerationFlags.AllDevices)) // Enumerate (list) all connected gamepads
             {
                 joystickGuid = deviceInstance.InstanceGuid; // Get the GUID of the first gamepad
                 connectedControllerName.Text = "Connected controller: " + deviceInstance.InstanceName; // Set textbox text to the name of the connected controller
@@ -63,8 +64,8 @@ namespace shoryutrain
             }
 
             joystick = new Joystick(directInput, joystickGuid); // Create a new Joystick object with the found GUID
-            joystick.Acquire(); // Acquire the joystick for use
-            xinputController = null; // Ensure XInput controller is not used
+            joystick.Acquire(); // Get access to the joystick as an input device
+            xinputController = null; // make sure the motherfucker doesnt think it's XInput anyway, this happened before. 
         }
 
         private void InitializeXInputController()
@@ -73,12 +74,12 @@ namespace shoryutrain
 
             if (xinputController.IsConnected)
             {
-                string controllerName = GetXInputControllerName();
+                string controllerName = GetXInputControllerName(); //For some dumb reason XInput does not have a way to fetch the hardware name of the controller, so we have to get DirectInput to do it for us.
                 connectedControllerName.Text = "Connected controller: " + controllerName; // Set textbox text to the name of the connected controller
             }
             else
             {
-                MessageBox.Show("There is no Xinput controller detected." + Environment.NewLine + "Try using DirectInput");
+                MessageBox.Show("There is no Xinput controller detected." + Environment.NewLine + "Try using DirectInput"); // advise people to use directinput if XInput detection goes wah wah wah
                 connectedControllerName.Text = "There is no controller connected."; // Set textbox text if no Xbox controller is connected
                 return;
             }
@@ -106,21 +107,21 @@ namespace shoryutrain
         private void InitializeTimer()
         {
             inputPollTimer = new System.Windows.Forms.Timer(); // Create a new Timer object
-            inputPollTimer.Interval = CalculateTimerInterval(60); // Set the timer interval to approximately 16 milliseconds (60 FPS)
+            inputPollTimer.Interval = CalculateTimerInterval(60); // I don't want any offset. calcluate the exact numer of ms per frame on 60fps
             inputPollTimer.Tick += InputPollTimer_Tick; // Add the event handler for the Tick event
             inputPollTimer.Start(); // Start the timer
         }
-        private int CalculateTimerInterval(int fps)
+        private int CalculateTimerInterval(int fps) // calculate the interval by dividing a second (1000ms) by 60 (frames per second)
         {
             return (int)Math.Round(1000.0 / fps);
         }
 
 
-        private void InputPollTimer_Tick(object sender, EventArgs e)
+        private void InputPollTimer_Tick(object sender, EventArgs e) // every tick, do (x)
         {
             try
             {
-                if (useDirectInput)
+                if (useDirectInput) //if directinput is used
                 {
                     if (joystick == null)
                     {
@@ -129,15 +130,27 @@ namespace shoryutrain
 
                     joystick.Poll(); // Poll the joystick for its current state
                     var state = joystick.GetCurrentState(); // Get the current state of the joystick
+                    /*
+                     - 32767 is a hack to unfuck the thumbstick values for directInput
+                    */
+                    int x = state.X - 32767; // Get the X axis value
+                    int rawY = state.Y - 32767; // Get the Y axis value
+                    int y = -rawY;
 
-                    int x = state.X; // Get the X axis value
-                    int y = state.Y; // Get the Y axis value
+                    /*
+                     I need to figure out a way to map the DPAD of an DirectInput controller accurately.
+                     Since the bitfield value for controller input values differ across various manufacturers 
+                    (for some controllers 0b010000000 can be DPad up, for other it could be the A button)
+                     i need to find a way to get this accurately mapped. will probably prompt this before the app initializes.
+                    will keep all of them flagged as false for now
+                     */
+
                     bool dpadUp = false;
                     bool dpadDown = false;
                     bool dpadLeft = false;
                     bool dpadRight = false;
 
-                    Debug.WriteLine($"DirectInput - X: {x}, Y: {y}");
+                    Debug.WriteLine($"DirectInput - X: {x}, Y: {y}"); //i have no idea what the fuck is going on with DirectInput and why it's outputting max X and Y values.
 
 
 
@@ -151,7 +164,7 @@ namespace shoryutrain
                     {
                         return; // Exit if XInput controller is not initialized or not connected
                     }
-
+                    
                     var state = xinputController.GetState(); // Get the current state of the XInput controller
                     int x = state.Gamepad.LeftThumbX; // Get the X axis value of the left thumbstick
                     int y = state.Gamepad.LeftThumbY; // Get the Y axis value of the left thumbstick
@@ -170,7 +183,7 @@ namespace shoryutrain
                     UpdateButtonColors(x, y, dpadDown, dpadUp, dpadRight, dpadLeft); // Update button colors based on controller state
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) //what
             {
                 MessageBox.Show($"An error occurred while polling the controller: {ex.Message}"); // Show error message if polling fails
             }
@@ -179,10 +192,8 @@ namespace shoryutrain
         private void UpdateButtonColors(int x, int y, bool dpadDown, bool dpadUp, bool dpadRight, bool dpadLeft)
         {
 
-            y = -y; // Invert the Y-axis value
-
             // Determine which button to highlight based on the X and Y axis values
-            if (y < -Deadzone || dpadUp)
+            if (y > Deadzone || dpadUp)
             {
                 if (x < -Deadzone || dpadLeft) // Top-left direction
                 {
@@ -200,7 +211,7 @@ namespace shoryutrain
                     buttonUp.ForeColor = Color.White;
                 }
             }
-            else if (y > Deadzone || dpadDown)
+            else if (y < -Deadzone || dpadDown)
             {
                 if (x < -Deadzone || dpadLeft) // Bottom-left direction
                 {
