@@ -1,6 +1,7 @@
 using SharpDX.DirectInput;
 using SharpDX.XInput;
 using System;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing.Text;
 using System.Windows.Forms;
@@ -9,9 +10,9 @@ namespace shoryutrain
 {
     public partial class Form1 : Form
     {
-        private const int Deadzone = 17000; // Define a deadzone constant value
+        private const int Deadzone = 20000; // Define a deadzone constant value
         private DirectInput directInput;
-        private Joystick joystick;
+        private Joystick joystick;  
         private Controller xinputController; // Controller object for XInput
         private System.Windows.Forms.Timer inputPollTimer;
         private bool useDirectInput = false; // Default to XInput
@@ -136,6 +137,8 @@ namespace shoryutrain
                     bool dpadLeft = false;
                     bool dpadRight = false;
 
+                    Debug.WriteLine($"DirectInput - X: {x}, Y: {y}");
+
 
 
                     ResetButtonColors(); // Reset the colors of all buttons to their default
@@ -159,6 +162,7 @@ namespace shoryutrain
                     bool dpadRight = (buttons & GamepadButtonFlags.DPadRight) == GamepadButtonFlags.DPadRight;
                     bool dpadLeft = (buttons & GamepadButtonFlags.DPadLeft) == GamepadButtonFlags.DPadLeft;
 
+                    Debug.WriteLine($"XInput - X: {x}, Y: {y}");
 
 
                     ResetButtonColors(); // Reset the colors of all buttons to their default
