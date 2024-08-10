@@ -5,7 +5,7 @@ Motion input training for people that are new to playing fighting games.
 
 
 
-![Logo](https://github.com/r00tkitty/files/blob/main/branding/shoryutrain/shryu.png?raw=true)
+![Logo](https://github.com/r00tkitty/files/blob/main/branding/shoryutrain/shryunew.png?raw=true)
 
 
 ## Features
