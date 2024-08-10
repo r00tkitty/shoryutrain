@@ -35,6 +35,8 @@
             comboBox1 = new ComboBox();
             soundOnLabel = new Label();
             checkBox2 = new CheckBox();
+            buttonNotLabel = new Label();
+            comboBox2 = new ComboBox();
             SuspendLayout();
             // 
             // appearanceHeader
@@ -103,11 +105,32 @@
             checkBox2.TabIndex = 7;
             checkBox2.UseVisualStyleBackColor = true;
             // 
+            // buttonNotLabel
+            // 
+            buttonNotLabel.AutoSize = true;
+            buttonNotLabel.Font = new Font("Segoe UI", 10F);
+            buttonNotLabel.Location = new Point(3, 194);
+            buttonNotLabel.Name = "buttonNotLabel";
+            buttonNotLabel.Size = new Size(109, 19);
+            buttonNotLabel.TabIndex = 8;
+            buttonNotLabel.Text = "Button Notation";
+            // 
+            // comboBox2
+            // 
+            comboBox2.FormattingEnabled = true;
+            comboBox2.Items.AddRange(new object[] { "Button icons", "Game specific icons" });
+            comboBox2.Location = new Point(118, 194);
+            comboBox2.Name = "comboBox2";
+            comboBox2.Size = new Size(137, 23);
+            comboBox2.TabIndex = 9;
+            // 
             // interfaceSettingsControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
+            Controls.Add(comboBox2);
+            Controls.Add(buttonNotLabel);
             Controls.Add(checkBox2);
             Controls.Add(soundOnLabel);
             Controls.Add(comboBox1);
@@ -130,5 +153,7 @@
         private ComboBox comboBox1;
         private Label soundOnLabel;
         private CheckBox checkBox2;
+        private Label buttonNotLabel;
+        private ComboBox comboBox2;
     }
 }
