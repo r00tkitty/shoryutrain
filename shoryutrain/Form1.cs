@@ -140,9 +140,9 @@ namespace shoryutrain // Application namespace
                      it sets a value that serves as a "Calibration value". 
                      Said calibration value gets subtracted from the offset value that is
                      DirectInput reading X and Y.*/
-                    int x = state.X  - calibrationX; 
+                    int x = state.X - calibrationX;
                     int invertY = state.Y - calibrationY;
-                    int y = -invertY;
+                    int y = -invertY; // Y is for some reason inverted. might add an option for this later too
                     /*
                      I need to figure out a way to map the DPAD of an DirectInput controller accurately.
                      Since the bitfield value for controller input values differ across various manufacturers 
@@ -196,20 +196,27 @@ namespace shoryutrain // Application namespace
         }
         private void directInputNeutralSetter_Click(object sender, EventArgs e)
         {
-            if (joystick != null) // Ensure the joystick is initialized
+            // Show a message box to prompt the user to leave the stick in neutral position
+            var result = MessageBox.Show("To calibrate the stick, put the stick in a neutral position." + Environment.NewLine + "Do not touch the stick." + Environment.NewLine + "Press \"OK\" when ready.",
+                                         "Stick Calibration", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+            if (result == DialogResult.OK)
             {
-                joystick.Poll(); // Poll the joystick for its current state
-                var state = joystick.GetCurrentState(); // Get the current state of the joystick
 
-                // Set calibration values to the current X and Y, but negative
-                calibrationX = state.X;
-                calibrationY = state.Y;
+                if (joystick != null) // Ensure the joystick is initialized
+                {
+                    joystick.Poll(); // Poll the joystick for its current state
+                    var state = joystick.GetCurrentState(); // Get the current state of the joystick
 
-                MessageBox.Show($"Neutral position set: X = {calibrationX}, Y = {calibrationY}");
-            }
-            else
-            {
-                MessageBox.Show("Joystick is not initialized.");
+                    // Set calibration values to the current X and Y, but negative
+                    calibrationX = state.X;
+                    calibrationY = state.Y;
+
+                    MessageBox.Show($"Neutral position set: X = {calibrationX}, Y = {calibrationY}");
+                }
+                else
+                {
+                    MessageBox.Show("Joystick is not initialized.");
+                }
             }
         }
 
@@ -359,6 +366,11 @@ namespace shoryutrain // Application namespace
 
         }
 
-        
+        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings settingsForm = new Settings();
+
+            settingsForm.ShowDialog();
+        }
     }
 }

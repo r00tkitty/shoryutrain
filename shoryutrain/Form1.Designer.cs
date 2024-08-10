@@ -54,6 +54,7 @@
             connectedControllerName = new TextBox();
             directInputNeutralSetter = new Button();
             directNeutralLabel = new Label();
+            preferencesToolStripMenuItem = new ToolStripMenuItem();
             inputHandlerSelector = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -71,14 +72,14 @@
             xinputMenuItem.Checked = true;
             xinputMenuItem.CheckState = CheckState.Checked;
             xinputMenuItem.Name = "xinputMenuItem";
-            xinputMenuItem.Size = new Size(133, 22);
+            xinputMenuItem.Size = new Size(180, 22);
             xinputMenuItem.Text = "Xinput";
             xinputMenuItem.Click += xinputMenuItem_Click;
             // 
             // directInputMenuItem
             // 
             directInputMenuItem.Name = "directInputMenuItem";
-            directInputMenuItem.Size = new Size(133, 22);
+            directInputMenuItem.Size = new Size(180, 22);
             directInputMenuItem.Text = "DirectInput";
             directInputMenuItem.Click += directInputMenuItem_Click;
             // 
@@ -188,7 +189,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { inputHandlerSelector, gameTypeSelector, About });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { About, inputHandlerSelector, gameTypeSelector });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(718, 24);
@@ -205,15 +206,16 @@
             // streetFighterToolStripMenuItem
             // 
             streetFighterToolStripMenuItem.Name = "streetFighterToolStripMenuItem";
-            streetFighterToolStripMenuItem.Size = new Size(144, 22);
+            streetFighterToolStripMenuItem.Size = new Size(180, 22);
             streetFighterToolStripMenuItem.Text = "Street Fighter";
             // 
             // About
             // 
             About.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            About.DropDownItems.AddRange(new ToolStripItem[] { preferencesToolStripMenuItem });
             About.Name = "About";
-            About.Size = new Size(52, 20);
-            About.Text = "About";
+            About.Size = new Size(37, 20);
+            About.Text = "File";
             About.Click += About_Click;
             // 
             // button1
@@ -305,6 +307,13 @@
             directNeutralLabel.TabIndex = 18;
             directNeutralLabel.Text = "Set Neutral position (DirectInput Only)";
             // 
+            // preferencesToolStripMenuItem
+            // 
+            preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            preferencesToolStripMenuItem.Size = new Size(180, 22);
+            preferencesToolStripMenuItem.Text = "Preferences";
+            preferencesToolStripMenuItem.Click += preferencesToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -370,5 +379,6 @@
         private TextBox connectedControllerName;
         private Button directInputNeutralSetter;
         private Label directNeutralLabel;
+        private ToolStripMenuItem preferencesToolStripMenuItem;
     }
 }

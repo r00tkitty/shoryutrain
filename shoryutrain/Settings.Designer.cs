@@ -28,6 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            TreeNode treeNode1 = new TreeNode("Appearance");
+            TreeNode treeNode2 = new TreeNode("Controller");
+            TreeNode treeNode3 = new TreeNode("General", new TreeNode[] { treeNode1, treeNode2 });
+            TreeNode treeNode4 = new TreeNode("Games");
+            TreeNode treeNode5 = new TreeNode("About");
             treeView1 = new TreeView();
             panel1 = new Panel();
             SuspendLayout();
@@ -38,6 +43,17 @@
             treeView1.Dock = DockStyle.Left;
             treeView1.Location = new Point(0, 0);
             treeView1.Name = "treeView1";
+            treeNode1.Name = "interfaceSettingsCat";
+            treeNode1.Text = "Appearance";
+            treeNode2.Name = "controllerSettingsCat";
+            treeNode2.Text = "Controller";
+            treeNode3.Name = "generalSettingsCat";
+            treeNode3.Text = "General";
+            treeNode4.Name = "gameSettingsCat";
+            treeNode4.Text = "Games";
+            treeNode5.Name = "aboutSettingsCat";
+            treeNode5.Text = "About";
+            treeView1.Nodes.AddRange(new TreeNode[] { treeNode3, treeNode4, treeNode5 });
             treeView1.Size = new Size(269, 556);
             treeView1.TabIndex = 0;
             treeView1.AfterSelect += treeView1_AfterSelect;
