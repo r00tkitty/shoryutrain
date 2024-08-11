@@ -45,6 +45,12 @@ namespace shoryutrain
                 controllerControl.Dock = DockStyle.Fill;
                 panel1.Controls.Add(controllerControl);
             }
+            else if(e.Node.Text == "Street Fighter")
+            {
+                streetFighterControl streetFighterControl = new streetFighterControl();
+                streetFighterControl.Dock = DockStyle.Fill;
+                panel1.Controls.Add(streetFighterControl);
+            }
 
         }
     }
