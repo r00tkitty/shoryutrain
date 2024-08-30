@@ -194,7 +194,5 @@ namespace shoryutrain
             // Prevent the parent form from handling the key down event
             e.Handled = true;
         }
-
-        // TODO: Implement similar event handlers for DirectInput and XInput if needed
     }
 }
