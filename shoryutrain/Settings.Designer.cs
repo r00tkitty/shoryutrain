@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            TreeNode treeNode7 = new TreeNode("Appearance");
-            TreeNode treeNode8 = new TreeNode("Controller");
-            TreeNode treeNode9 = new TreeNode("General", new TreeNode[] { treeNode7, treeNode8 });
-            TreeNode treeNode10 = new TreeNode("Street Fighter");
-            TreeNode treeNode11 = new TreeNode("Games", new TreeNode[] { treeNode10 });
-            TreeNode treeNode12 = new TreeNode("About");
+            TreeNode treeNode1 = new TreeNode("Appearance");
+            TreeNode treeNode2 = new TreeNode("Controller");
+            TreeNode treeNode3 = new TreeNode("General", new TreeNode[] { treeNode1, treeNode2 });
+            TreeNode treeNode4 = new TreeNode("Street Fighter");
+            TreeNode treeNode5 = new TreeNode("Games", new TreeNode[] { treeNode4 });
+            TreeNode treeNode6 = new TreeNode("About");
             treeView1 = new TreeView();
             panel1 = new Panel();
             SuspendLayout();
@@ -44,19 +44,19 @@
             treeView1.Dock = DockStyle.Left;
             treeView1.Location = new Point(0, 0);
             treeView1.Name = "treeView1";
-            treeNode7.Name = "interfaceSettingsCat";
-            treeNode7.Text = "Appearance";
-            treeNode8.Name = "controllerSettingsCat";
-            treeNode8.Text = "Controller";
-            treeNode9.Name = "generalSettingsCat";
-            treeNode9.Text = "General";
-            treeNode10.Name = "streetFighterCat";
-            treeNode10.Text = "Street Fighter";
-            treeNode11.Name = "gameSettingsCat";
-            treeNode11.Text = "Games";
-            treeNode12.Name = "aboutSettingsCat";
-            treeNode12.Text = "About";
-            treeView1.Nodes.AddRange(new TreeNode[] { treeNode9, treeNode11, treeNode12 });
+            treeNode1.Name = "interfaceSettingsCat";
+            treeNode1.Text = "Appearance";
+            treeNode2.Name = "controllerSettingsCat";
+            treeNode2.Text = "Controller";
+            treeNode3.Name = "generalSettingsCat";
+            treeNode3.Text = "General";
+            treeNode4.Name = "streetFighterCat";
+            treeNode4.Text = "Street Fighter";
+            treeNode5.Name = "gameSettingsCat";
+            treeNode5.Text = "Games";
+            treeNode6.Name = "aboutSettingsCat";
+            treeNode6.Text = "About";
+            treeView1.Nodes.AddRange(new TreeNode[] { treeNode3, treeNode5, treeNode6 });
             treeView1.Size = new Size(269, 556);
             treeView1.TabIndex = 0;
             treeView1.AfterSelect += treeView1_AfterSelect;

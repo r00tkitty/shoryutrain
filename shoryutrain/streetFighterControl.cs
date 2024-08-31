@@ -1,215 +1,165 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SharpDX.DirectInput; // DirectInput support
 using SharpDX.XInput; // XInput support
 
 namespace shoryutrain
 {
-
-    public partial class streetFighterControl: UserControl
+    public partial class streetFighterControl : UserControl
     {
-        //arrays to hold references to both tables
+        // Arrays to hold references to buttons for both tables
         private Button[] keyboardButtonsMain;
         private Button[] controllerButtonsMain;
 
         private Button[] keyboardButtonsMacro;
         private Button[] controllerButtonsMacro;
 
-        private readonly String[] buttonNamesMain =
+        // Define button names for both tables
+        private readonly string[] buttonNamesMain =
         {
             "LK", "MK", "HK", "LP", "MP", "HP",
             "LP+LK", "MP+MK", "HP+HK"
         };
 
-        private readonly String[] buttonNamesMacro =
+        private readonly string[] buttonNamesMacro =
         {
             "LP+MP", "LP+HP", "MP+HP",
             "LK+MK", "LK+HK", "MK+HK",
             "LP+MP+HP", "LK+MK+HK", "LP+MP+HP+LK+MK+HK"
         };
 
-        private Dictionary<string, Keys> keyboardBindings;
-        private Dictionary<string, string> controllerBindings;
+        // Dictionaries to store the current key bindings
+        private Dictionary<string, Keys> keyboardBindings; // Keyboard bindings
+        private Dictionary<string, string> directInputBindings; // DirectInput controller bindings
+        private Dictionary<string, string> xinputBindings; // XInput controller bindings
 
+        // To track the button currently being configured
         private Button activeButton = null;
 
+        // DirectInput objects
         private DirectInput directInput;
         private Joystick directInputJoystick;
 
-        private Controller xInputController;
-
+        // XInput objects
+        private Controller xinputController;
 
         public streetFighterControl()
         {
+            InitializeComponent(); // Initialize components created by the designer
+            InitializeButtons();  // Call method to initialize buttons and labels
 
-            InitializeComponent(); //initialize designer shit
-            InitializeButtons(); //initialize buttons
-
+            // Initialize dictionaries to store the key bindings
             keyboardBindings = new Dictionary<string, Keys>();
-            controllerBindings = new Dictionary<string, string>();
+            directInputBindings = new Dictionary<string, string>();
+            xinputBindings = new Dictionary<string, string>();
 
-
+            // Initialize DirectInput
             directInput = new DirectInput();
+            directInputJoystick = new Joystick(directInput, Guid.Empty); // Use a specific GUID for the desired joystick
 
-            xInputController = new Controller(UserIndex.One);
-
-            string inputMethod = Properties.Settings.Default.InputMethod;
-
-            switch(inputMethod)
-            {
-                case "XInput": // If XInput is selected in settings
-                    InitializeXInput();
-                    break;
-
-                case "DirectInput": // If DirectInput is selected in settings
-                    InitializeDirectInput();
-                    break;
-
-                default: // If neither of the settings are selected
-                    MessageBox.Show("what");
-                    break;
-
-            }
+            // Initialize XInput
+            xinputController = new Controller(UserIndex.One); // Use a specific user index for the desired controller
         }
 
+        // Method to initialize buttons for both tables
         private void InitializeButtons()
         {
-            // initialize array
+            // Initialize the button arrays for the main table
             keyboardButtonsMain = new Button[buttonNamesMain.Length];
             controllerButtonsMain = new Button[buttonNamesMain.Length];
-            //initialize array again
+
+            // Initialize the button arrays for the macro table
             keyboardButtonsMacro = new Button[buttonNamesMacro.Length];
             controllerButtonsMacro = new Button[buttonNamesMacro.Length];
 
+            // Populate the main keybind table (sfKeybindTableMain)
             for (int i = 0; i < buttonNamesMain.Length; i++)
             {
+                // Initialize controller button
                 controllerButtonsMain[i] = new Button();
-                controllerButtonsMain[i].Text = "(None)";
-                controllerButtonsMain[i].Click += ControllerButton_Click;
-                controllerButtonsMain[i].Tag = buttonNamesMain[i];
+                controllerButtonsMain[i].Text = "(None)"; // Default text when no key is bound
+                controllerButtonsMain[i].Click += Button_Click; // Assign click event handler
 
+                // Initialize keyboard button
                 keyboardButtonsMain[i] = new Button();
-                keyboardButtonsMain[i].Text = "(None)";
-                keyboardButtonsMain[i].Click += KeyboardButton_Click;
-                keyboardButtonsMain[i].Tag = buttonNamesMain[i];
-                
+                keyboardButtonsMain[i].Text = "(None)"; // Default text when no key is bound
+                keyboardButtonsMain[i].Click += Button_Click; // Assign click event handler
 
-                sfKeybindTableMain.Controls.Add(controllerButtonsMain[i], 1, i);
-                sfKeybindTableMain.Controls.Add(keyboardButtonsMain[i], 2, i);
+                // Add controller button and keyboard button to the main TableLayoutPanel
+                sfKeybindTableMain.Controls.Add(controllerButtonsMain[i], 1, i); // Add controller button to the second column
+                sfKeybindTableMain.Controls.Add(keyboardButtonsMain[i], 2, i); // Add keyboard button to the third column
             }
 
+            // Populate the macro keybind table (sfKeybindTableMacro)
             for (int i = 0; i < buttonNamesMacro.Length; i++)
             {
+                // Initialize controller button
                 controllerButtonsMacro[i] = new Button();
-                controllerButtonsMacro[i].Text = "(None)";
-                controllerButtonsMacro[i].Click += ControllerButton_Click;
-                controllerButtonsMacro[i].Tag = buttonNamesMacro[i];
+                controllerButtonsMacro[i].Text = "(None)"; // Default text when no key is bound
+                controllerButtonsMacro[i].Click += Button_Click; // Assign click event handler
 
+                // Initialize keyboard button
                 keyboardButtonsMacro[i] = new Button();
-                keyboardButtonsMacro[i].Text = "(None)";
-                keyboardButtonsMacro[i].Click += KeyboardButton_Click;
-                keyboardButtonsMacro[i].Tag = buttonNamesMacro[i];
+                keyboardButtonsMacro[i].Text = "(None)"; // Default text when no key is bound
+                keyboardButtonsMacro[i].Click += Button_Click; // Assign click event handler
 
-
-
-                sfKeybindTableMacro.Controls.Add(controllerButtonsMacro[i], 1, i);
-                sfKeybindTableMacro.Controls.Add(keyboardButtonsMacro[i], 2, i);
-            }
-
-        }
-
-        // Initialize DirectInput and find connected devices
-        private void InitializeDirectInput()
-        {
-            try
-            {
-                // Check for connected joysticks
-                foreach (var deviceInstance in directInput.GetDevices(SharpDX.DirectInput.DeviceType.Joystick, DeviceEnumerationFlags.AllDevices))
-                {
-                    // Initialize the joystick using the deviceInstance
-                    directInputJoystick = new Joystick(directInput, deviceInstance.InstanceGuid);
-                    directInputJoystick.Acquire(); // Acquire control over the joystick
-                    Debug.WriteLine("Joystick connected: " + deviceInstance.InstanceName);
-                    break; // Use the first joystick found
-                }
-
-                // If no joystick was found, check for gamepads
-                if (directInputJoystick == null)
-                {
-                    foreach (var deviceInstance in directInput.GetDevices(SharpDX.DirectInput.DeviceType.Gamepad, DeviceEnumerationFlags.AllDevices))
-                    {
-                        // Initialize the gamepad using the deviceInstance
-                        directInputJoystick = new Joystick(directInput, deviceInstance.InstanceGuid);
-                        directInputJoystick.Acquire(); // Acquire control over the gamepad
-                        Debug.WriteLine("Gamepad connected: " + deviceInstance.InstanceName);
-                        break; // Use the first gamepad found
-                    }
-                }
-
-                // If no device is found, handle accordingly
-                if (directInputJoystick == null)
-                {
-                    Debug.WriteLine("No DirectInput devices found.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Error initializing DirectInput: " + ex.Message);
+                // Add controller button and keyboard button to the macro TableLayoutPanel
+                sfKeybindTableMacro.Controls.Add(controllerButtonsMacro[i], 1, i); // Add controller button to the second column
+                sfKeybindTableMacro.Controls.Add(keyboardButtonsMacro[i], 2, i); // Add keyboard button to the third column
             }
         }
 
-        // Initialize XInput
-        private void InitializeXInput()
+        // Event handler for button clicks
+        private void Button_Click(object sender, EventArgs e)
         {
-            // Optionally check if the XInput controller is connected
-            if (!xInputController.IsConnected)
-            {
-                Debug.WriteLine("No XInput controllers connected.");
-            }
-        }
-
-        // Event handler for controller button clicks
-        private void ControllerButton_Click(object sender, EventArgs e)
-        {
-            // Logic to handle controller button remapping goes here
-            // This will poll the correct input method based on the selected input method
+            // Cast the sender object to a Button
             Button button = sender as Button;
             if (button != null)
             {
+                // Store the button being configured
                 activeButton = button;
-                button.Text = "..."; // Show that we're waiting for input
-
-                // Poll based on the selected input method
-                switch (Properties.Settings.Default.InputMethod)
-                {
-                    case "XInput":
-                        PollXInput();
-                        break;
-
-                    case "DirectInput":
-                        PollDirectInput();
-                        break;
-                }
-            }
-        }
-        // Event handler for keyboard button clicks
-        private void KeyboardButton_Click(object sender, EventArgs e)
-        {
-            Button button = sender as Button;
-            if (button != null)
-            {
-                activeButton = button;
-                button.Text = "..."; // Show that we're waiting for input
+                // Display that the button is waiting for input
+                button.Text = "Input bind...";
 
                 // Subscribe to the form's key down event to capture keyboard input
                 this.ParentForm.PreviewKeyDown += ParentForm_PreviewKeyDown;
                 this.ParentForm.KeyDown += ParentForm_KeyDown;
+
+                // Subscribe to DirectInput and XInput events
+                // Note: Implement event handlers or polling for DirectInput and XInput here
             }
         }
+
+        // Handle DirectInput input (This might require a polling mechanism or event handling)
+        private void PollDirectInput()
+        {
+            if (directInputJoystick != null)
+            {
+                // Poll the DirectInput joystick
+                directInputJoystick.Acquire();
+                var state = directInputJoystick.GetCurrentState();
+
+                // TODO: Handle DirectInput joystick state
+                // Map the state to your bindings and update the UI accordingly
+            }
+        }
+
+        // Handle XInput input
+        private void PollXInput()
+        {
+            if (xinputController != null)
+            {
+                var state = xinputController.GetState();
+                var gamepad = state.Gamepad;
+                Debug.WriteLine(gamepad);
+
+                // Example: Map XInput gamepad buttons to your bindings
+                // TODO: Handle XInput gamepad state and update bindings accordingly
+            }
+        }
+
         // Handle keyboard input
         private void ParentForm_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
@@ -238,83 +188,11 @@ namespace shoryutrain
             }
         }
 
+        // Define the ParentForm_KeyDown method to handle key down events
         private void ParentForm_KeyDown(object sender, KeyEventArgs e)
         {
-            // Handle any other key down logic here if necessary
+            // Prevent the parent form from handling the key down event
+            e.Handled = true;
         }
-
-
-        // Poll for XInput controller input
-        private void PollXInput()
-        {
-            Task.Run(async () =>
-            {
-                for (int i = 0; i < 50; i++) // Poll for 5 seconds (50 times at 100ms intervals)
-                {
-                    if (xInputController.IsConnected)
-                    {
-                        var state = xInputController.GetState();
-                        if (state.Gamepad.Buttons != GamepadButtonFlags.None)
-                        {
-                            // Example: check if the A button is pressed
-                            if (state.Gamepad.Buttons.HasFlag(GamepadButtonFlags.A))
-                            {
-                                // Bind the A button to the action represented by the activeButton
-                                string action = activeButton.Tag.ToString();
-                                controllerBindings[action] = "A";
-
-                                // Update the button text with the bound button name
-                                activeButton.Text = "A";
-                                break; // Exit the loop once a button is bound
-                            }
-                            // Add similar checks for other buttons (B, X, Y, etc.)
-                        }
-                    }
-                    await Task.Delay(100); // Wait for 100ms before polling again
-                }
-                ResetActiveButtonIfUnbound(); // Reset if no button was bound
-            });
-        }
-
-        // Poll for DirectInput controller input
-        private void PollDirectInput()
-        {
-            Task.Run(async () =>
-            {
-                for (int i = 0; i < 50; i++) // Poll for 5 seconds (50 times at 100ms intervals)
-                {
-                    if (directInputJoystick != null)
-                    {
-                        var state = directInputJoystick.GetCurrentState();
-                        var buttons = state.Buttons;
-                        for (int j = 0; j < buttons.Length; j++)
-                        {
-                            if (buttons[j]) // If button[j] is pressed
-                            {
-                                string action = activeButton.Tag.ToString();
-                                controllerBindings[action] = $"Button{j + 1}";
-
-                                // Update the button text with the bound button name
-                                activeButton.Text = $"Button{j + 1}";
-                                break; // Exit the loop once a button is bound
-                            }
-                        }
-                    }
-                    await Task.Delay(100); // Wait for 100ms before polling again
-                }
-                ResetActiveButtonIfUnbound(); // Reset if no button was bound
-            });
-        }
-
-        // Reset the active button if no input was detected
-        private void ResetActiveButtonIfUnbound()
-        {
-            if (activeButton != null && activeButton.Text == "...")
-            {
-                activeButton.Text = "(None)";
-                activeButton = null;
-            }
-        }
-
     }
 }

@@ -11,13 +11,12 @@ namespace shoryutrain // Application namespace
 {
     public partial class Form1 : Form // Define the Form1 class that inherits from Form, making it a Windows Form
     {
-        private int Deadzone = Properties.Settings.Default.Deadzone; // Define a deadzone constant value
+        private const int Deadzone = 20000; // Define a deadzone constant value
         private DirectInput directInput; // Make DirectInput object to handle DirectInput
         private Joystick joystick;  // Joystick for DirectInput joystick info
         private Controller xinputController; // Controller object for XInput
         private System.Windows.Forms.Timer inputPollTimer; // Timer to poll inputs
-        private string inputMethod = Properties.Settings.Default.InputMethod; // Default to XInput
-
+        private bool useDirectInput = false; // Default to XInput
 
         //DirectInput un-fucking
         private int calibrationX = 0;
@@ -29,36 +28,25 @@ namespace shoryutrain // Application namespace
             InitController();
             InitializeTimer();
         }
-        private void LoadSettings()
-        {
-            // Use the setting to configure the form or application
-            string inputMethod = Properties.Settings.Default.InputMethod;
-            // Update UI or other components as needed
-        }
-        private void InitController()
+
+        private void InitController() // Initialize controllers
         {
             try
             {
-                switch (inputMethod)
+                if (useDirectInput) //If directInput is selected, then initialize controller as a DirectInput controller
                 {
-                    case "DirectInput":
-                        InitializeDirectInputController();
-                        Debug.WriteLine("DirectInput is the default now");
-                        break;
-                    case "XInput":
-                        Debug.WriteLine("XInput is the default now");
-                        InitializeXInputController();
-                        break;
-                    default:
-                        throw new NotSupportedException($"Input method {inputMethod} is not supported.");
+                    InitializeDirectInputController();
+                }
+                else // otherwise, just init it as a XInput
+                {
+                    InitializeXInputController();
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) // what the fuck
             {
-                MessageBox.Show($"An error occurred while initializing the controller: {ex.Message}");
+                MessageBox.Show($"An error occurred while initializing the controller: {ex.Message}"); // Show error message if initialization fails
             }
         }
-
 
         private void InitializeDirectInputController() // initialize DirectInput controller
         {
@@ -118,7 +106,7 @@ namespace shoryutrain // Application namespace
             return "Unknown XInput Controller"; // Return a default name if no match is found
 
         }
-        
+
 
         private void InitializeTimer()
         {
@@ -137,7 +125,7 @@ namespace shoryutrain // Application namespace
         {
             try
             {
-                if (inputMethod == "DirectInput") //if directinput is used
+                if (useDirectInput) //if directinput is used
                 {
                     if (joystick == null)
                     {
@@ -168,7 +156,7 @@ namespace shoryutrain // Application namespace
                     bool dpadLeft = false;
                     bool dpadRight = false;
 
-                    /*Debug.WriteLine($"DirectInput - X: {x}, Y: {y}");*/ //i have no idea what the fuck is going on with DirectInput and why it's outputting max X and Y values.
+                    Debug.WriteLine($"DirectInput - X: {x}, Y: {y}"); //i have no idea what the fuck is going on with DirectInput and why it's outputting max X and Y values.
 
 
 
@@ -176,7 +164,7 @@ namespace shoryutrain // Application namespace
 
                     UpdateButtonColors(x, y, dpadDown, dpadUp, dpadRight, dpadLeft); // Update button colors based on controller state
                 }
-                else if (inputMethod == "XInput")
+                else
                 {
                     if (xinputController == null || !xinputController.IsConnected)
                     {
@@ -193,7 +181,7 @@ namespace shoryutrain // Application namespace
                     bool dpadRight = (buttons & GamepadButtonFlags.DPadRight) == GamepadButtonFlags.DPadRight;
                     bool dpadLeft = (buttons & GamepadButtonFlags.DPadLeft) == GamepadButtonFlags.DPadLeft;
 
-                    //Debug.WriteLine($"XInput - X: {x}, Y: {y}");
+                    Debug.WriteLine($"XInput - X: {x}, Y: {y}");
 
 
                     ResetButtonColors(); // Reset the colors of all buttons to their default
@@ -327,36 +315,8 @@ namespace shoryutrain // Application namespace
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Initialize the menu based on the saved settings
-            string savedInputMethod = Properties.Settings.Default.InputMethod;
 
-            // Ensure that MainMenuStrip.Items[0] is a ToolStripMenuItem
-            if (MainMenuStrip.Items[1] is ToolStripMenuItem settingsMenuItem)
-            {
-                // Find the menu item that matches the saved input method
-                ToolStripMenuItem selectedItem = settingsMenuItem.DropDownItems
-                    .OfType<ToolStripMenuItem>()
-                    .FirstOrDefault(item => item.Text == savedInputMethod);
-
-                if (selectedItem != null)
-                {
-                    UpdateMenuSelection(selectedItem);
-                }
-                else
-                {
-                    // Default to XInput if no matching input method is found
-                    ToolStripMenuItem defaultItem = settingsMenuItem.DropDownItems
-                        .OfType<ToolStripMenuItem>()
-                        .FirstOrDefault(item => item.Text == "XInput");
-
-                    if (defaultItem != null)
-                    {
-                        UpdateMenuSelection(defaultItem);
-                    }
-                }
-            }
         }
-
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
@@ -379,63 +339,27 @@ namespace shoryutrain // Application namespace
         }
         private void UpdateMenuSelection(ToolStripMenuItem selectedItem)
         {
-            // Check if MainMenuStrip is properly initialized
-            if (MainMenuStrip != null && MainMenuStrip.Items.Count > 1)
+            foreach (ToolStripMenuItem item in ((ToolStripMenuItem)MainMenuStrip.Items[0]).DropDownItems) // Iterate through all items in the settings menu
             {
-                // Ensure we're accessing the correct column (second column, index 1)
-                if (MainMenuStrip.Items[1] is ToolStripMenuItem menuItem)
-                {
-                    // Debug: Log the number of items in the menu
-                    Debug.WriteLine($"Updating Menu: Total items count in second column = {menuItem.DropDownItems.Count}");
-
-                    // Iterate through the drop-down items
-                    foreach (ToolStripMenuItem item in menuItem.DropDownItems)
-                    {
-                        // Log each item's text and whether it matches the selected item
-                        Debug.WriteLine($"Item: {item.Text}, Selected: {item == selectedItem}");
-
-                        // Update the check state based on the selected item
-                        item.Checked = item == selectedItem;
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("The second item in MainMenuStrip is not a ToolStripMenuItem.");
-                }
-            }
-            else
-            {
-                Debug.WriteLine("MainMenuStrip or its items are null or not properly initialized.");
+                item.Checked = item == selectedItem; // Check the selected item and uncheck others
             }
         }
-
-
 
 
         private void xinputMenuItem_Click(object sender, EventArgs e)
         {
-            inputMethod = "XInput";
-            UpdateMenuSelection((ToolStripMenuItem)sender);
-            InitController();
-            // Set a new value for the input method
-            Properties.Settings.Default.InputMethod = "XInput";
-
-            // Save the changes
-            Properties.Settings.Default.Save();
+            useDirectInput = false; // Set flag to use XInput
+            UpdateMenuSelection((ToolStripMenuItem)sender); // Update the menu selection
+            InitController(); // Reinitialize the controller to use XInput
         }
 
         private void directInputMenuItem_Click(object sender, EventArgs e)
         {
-            inputMethod = "DirectInput";
-            UpdateMenuSelection((ToolStripMenuItem)sender);
-            InitController();
-            // Set a new value for the input method
-            Properties.Settings.Default.InputMethod = "DirectInput";
+            useDirectInput = true; // Set flag to use DirectInput
+            UpdateMenuSelection((ToolStripMenuItem)sender); // Update the menu selection
+            InitController(); // Reinitialize the controller to use DirectInput
 
-            // Save the changes
-            Properties.Settings.Default.Save();
         }
-
 
         private void connectedControllerName_TextChanged(object sender, EventArgs e)
         {

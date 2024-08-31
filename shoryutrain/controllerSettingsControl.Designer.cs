@@ -32,13 +32,10 @@
             comboBox1 = new ComboBox();
             controllerList = new Label();
             deadzoneLabel = new Label();
-            trackBarDeadZone = new TrackBar();
+            trackBar1 = new TrackBar();
             label1 = new Label();
-            defaultInputComboBox = new ComboBox();
-            deadZoneTextBox = new TextBox();
-            controllerSettingsApplyBtn = new Button();
-            setDefaultControllerSettingsBtn = new Button();
-            ((System.ComponentModel.ISupportInitialize)trackBarDeadZone).BeginInit();
+            comboBox2 = new ComboBox();
+            ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
             SuspendLayout();
             // 
             // controllerHeader
@@ -79,16 +76,15 @@
             deadzoneLabel.TabIndex = 8;
             deadzoneLabel.Text = "Controller Deadzone";
             // 
-            // trackBarDeadZone
+            // trackBar1
             // 
-            trackBarDeadZone.Location = new Point(144, 118);
-            trackBarDeadZone.Maximum = 32767;
-            trackBarDeadZone.Name = "trackBarDeadZone";
-            trackBarDeadZone.Size = new Size(221, 45);
-            trackBarDeadZone.SmallChange = 100;
-            trackBarDeadZone.TabIndex = 9;
-            trackBarDeadZone.TickFrequency = 1000;
-            trackBarDeadZone.Scroll += trackBarDeadZone_Scroll;
+            trackBar1.Location = new Point(144, 118);
+            trackBar1.Maximum = 32767;
+            trackBar1.Name = "trackBar1";
+            trackBar1.Size = new Size(250, 45);
+            trackBar1.SmallChange = 100;
+            trackBar1.TabIndex = 9;
+            trackBar1.TickFrequency = 1000;
             // 
             // label1
             // 
@@ -100,63 +96,29 @@
             label1.TabIndex = 10;
             label1.Text = "Default Input method";
             // 
-            // defaultInputComboBox
+            // comboBox2
             // 
-            defaultInputComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            defaultInputComboBox.FormattingEnabled = true;
-            defaultInputComboBox.Items.AddRange(new object[] { "XInput", "DirectInput" });
-            defaultInputComboBox.Location = new Point(151, 175);
-            defaultInputComboBox.Name = "defaultInputComboBox";
-            defaultInputComboBox.Size = new Size(121, 23);
-            defaultInputComboBox.TabIndex = 11;
-            defaultInputComboBox.SelectedIndexChanged += defaultInputComboBox_SelectedIndexChanged;
-            // 
-            // deadZoneTextBox
-            // 
-            deadZoneTextBox.Location = new Point(371, 118);
-            deadZoneTextBox.Name = "deadZoneTextBox";
-            deadZoneTextBox.Size = new Size(100, 23);
-            deadZoneTextBox.TabIndex = 12;
-            deadZoneTextBox.TextChanged += deadZoneTextBox_TextChanged;
-            // 
-            // controllerSettingsApplyBtn
-            // 
-            controllerSettingsApplyBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            controllerSettingsApplyBtn.Location = new Point(595, 378);
-            controllerSettingsApplyBtn.Name = "controllerSettingsApplyBtn";
-            controllerSettingsApplyBtn.Size = new Size(82, 30);
-            controllerSettingsApplyBtn.TabIndex = 13;
-            controllerSettingsApplyBtn.Text = "Apply";
-            controllerSettingsApplyBtn.UseVisualStyleBackColor = true;
-            controllerSettingsApplyBtn.Click += controllerSettingsApplyBtn_Click;
-            // 
-            // setDefaultControllerSettingsBtn
-            // 
-            setDefaultControllerSettingsBtn.Location = new Point(507, 378);
-            setDefaultControllerSettingsBtn.Name = "setDefaultControllerSettingsBtn";
-            setDefaultControllerSettingsBtn.Size = new Size(82, 30);
-            setDefaultControllerSettingsBtn.TabIndex = 14;
-            setDefaultControllerSettingsBtn.Text = "Defaults";
-            setDefaultControllerSettingsBtn.UseVisualStyleBackColor = true;
+            comboBox2.FormattingEnabled = true;
+            comboBox2.Items.AddRange(new object[] { "XInput", "DirectInput" });
+            comboBox2.Location = new Point(151, 175);
+            comboBox2.Name = "comboBox2";
+            comboBox2.Size = new Size(121, 23);
+            comboBox2.TabIndex = 11;
             // 
             // controllerSettingsControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(setDefaultControllerSettingsBtn);
-            Controls.Add(controllerSettingsApplyBtn);
-            Controls.Add(deadZoneTextBox);
-            Controls.Add(defaultInputComboBox);
+            Controls.Add(comboBox2);
             Controls.Add(label1);
-            Controls.Add(trackBarDeadZone);
+            Controls.Add(trackBar1);
             Controls.Add(deadzoneLabel);
             Controls.Add(comboBox1);
             Controls.Add(controllerList);
             Controls.Add(controllerHeader);
             Name = "controllerSettingsControl";
             Size = new Size(680, 411);
-            Load += controllerSettingsControl_Load;
-            ((System.ComponentModel.ISupportInitialize)trackBarDeadZone).EndInit();
+            ((System.ComponentModel.ISupportInitialize)trackBar1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -167,11 +129,8 @@
         private ComboBox comboBox1;
         private Label controllerList;
         private Label deadzoneLabel;
-        private TrackBar trackBarDeadZone;
+        private TrackBar trackBar1;
         private Label label1;
-        private ComboBox defaultInputComboBox;
-        private TextBox deadZoneTextBox;
-        private Button controllerSettingsApplyBtn;
-        private Button setDefaultControllerSettingsBtn;
+        private ComboBox comboBox2;
     }
 }
