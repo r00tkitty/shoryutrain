@@ -42,9 +42,10 @@
             buttonDown = new Button();
             buttonDownRight = new Button();
             menuStrip1 = new MenuStrip();
+            About = new ToolStripMenuItem();
+            preferencesToolStripMenuItem = new ToolStripMenuItem();
             gameTypeSelector = new ToolStripMenuItem();
             streetFighterToolStripMenuItem = new ToolStripMenuItem();
-            About = new ToolStripMenuItem();
             button1 = new Button();
             button2 = new Button();
             button3 = new Button();
@@ -54,7 +55,6 @@
             connectedControllerName = new TextBox();
             directInputNeutralSetter = new Button();
             directNeutralLabel = new Label();
-            preferencesToolStripMenuItem = new ToolStripMenuItem();
             inputHandlerSelector = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -65,23 +65,20 @@
             inputHandlerSelector.Name = "inputHandlerSelector";
             inputHandlerSelector.Size = new Size(72, 20);
             inputHandlerSelector.Text = "Controller";
-            inputHandlerSelector.Click += toolStripMenuItem1_Click;
             // 
             // xinputMenuItem
             // 
             xinputMenuItem.Checked = true;
             xinputMenuItem.CheckState = CheckState.Checked;
             xinputMenuItem.Name = "xinputMenuItem";
-            xinputMenuItem.Size = new Size(180, 22);
+            xinputMenuItem.Size = new Size(133, 22);
             xinputMenuItem.Text = "Xinput";
-            xinputMenuItem.Click += xinputMenuItem_Click;
             // 
             // directInputMenuItem
             // 
             directInputMenuItem.Name = "directInputMenuItem";
-            directInputMenuItem.Size = new Size(180, 22);
+            directInputMenuItem.Size = new Size(133, 22);
             directInputMenuItem.Text = "DirectInput";
-            directInputMenuItem.Click += directInputMenuItem_Click;
             // 
             // buttonUpLeft
             // 
@@ -196,6 +193,20 @@
             menuStrip1.TabIndex = 9;
             menuStrip1.Text = "menuStrip1";
             // 
+            // About
+            // 
+            About.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            About.DropDownItems.AddRange(new ToolStripItem[] { preferencesToolStripMenuItem });
+            About.Name = "About";
+            About.Size = new Size(37, 20);
+            About.Text = "File";
+            // 
+            // preferencesToolStripMenuItem
+            // 
+            preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            preferencesToolStripMenuItem.Size = new Size(135, 22);
+            preferencesToolStripMenuItem.Text = "Preferences";
+            // 
             // gameTypeSelector
             // 
             gameTypeSelector.DropDownItems.AddRange(new ToolStripItem[] { streetFighterToolStripMenuItem });
@@ -206,17 +217,8 @@
             // streetFighterToolStripMenuItem
             // 
             streetFighterToolStripMenuItem.Name = "streetFighterToolStripMenuItem";
-            streetFighterToolStripMenuItem.Size = new Size(180, 22);
+            streetFighterToolStripMenuItem.Size = new Size(144, 22);
             streetFighterToolStripMenuItem.Text = "Street Fighter";
-            // 
-            // About
-            // 
-            About.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            About.DropDownItems.AddRange(new ToolStripItem[] { preferencesToolStripMenuItem });
-            About.Name = "About";
-            About.Size = new Size(37, 20);
-            About.Text = "File";
-            About.Click += About_Click;
             // 
             // button1
             // 
@@ -286,7 +288,6 @@
             connectedControllerName.ReadOnly = true;
             connectedControllerName.Size = new Size(312, 23);
             connectedControllerName.TabIndex = 16;
-            connectedControllerName.TextChanged += connectedControllerName_TextChanged;
             // 
             // directInputNeutralSetter
             // 
@@ -307,17 +308,11 @@
             directNeutralLabel.TabIndex = 18;
             directNeutralLabel.Text = "Set Neutral position (DirectInput Only)";
             // 
-            // preferencesToolStripMenuItem
-            // 
-            preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            preferencesToolStripMenuItem.Size = new Size(180, 22);
-            preferencesToolStripMenuItem.Text = "Preferences";
-            preferencesToolStripMenuItem.Click += preferencesToolStripMenuItem_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.Control;
             ClientSize = new Size(718, 402);
             Controls.Add(directNeutralLabel);
             Controls.Add(directInputNeutralSetter);
@@ -342,10 +337,11 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Margin = new Padding(4, 3, 4, 3);
+            MaximizeBox = false;
             Name = "Form1";
             RightToLeft = RightToLeft.No;
+            SizeGripStyle = SizeGripStyle.Hide;
             Text = "Shoryutrain";
-            Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
