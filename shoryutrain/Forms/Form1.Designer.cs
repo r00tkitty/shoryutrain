@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            ToolStripMenuItem inputHandlerSelector;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             xinputMenuItem = new ToolStripMenuItem();
             directInputMenuItem = new ToolStripMenuItem();
@@ -42,9 +41,10 @@
             buttonDown = new Button();
             buttonDownRight = new Button();
             menuStrip1 = new MenuStrip();
+            About = new ToolStripMenuItem();
+            preferencesToolStripMenuItem = new ToolStripMenuItem();
             gameTypeSelector = new ToolStripMenuItem();
             streetFighterToolStripMenuItem = new ToolStripMenuItem();
-            About = new ToolStripMenuItem();
             button1 = new Button();
             button2 = new Button();
             button3 = new Button();
@@ -54,18 +54,18 @@
             connectedControllerName = new TextBox();
             directInputNeutralSetter = new Button();
             directNeutralLabel = new Label();
-            preferencesToolStripMenuItem = new ToolStripMenuItem();
-            inputHandlerSelector = new ToolStripMenuItem();
+            inputMethodMenu = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
-            // inputHandlerSelector
+            // inputMethodMenu
             // 
-            inputHandlerSelector.DropDownItems.AddRange(new ToolStripItem[] { xinputMenuItem, directInputMenuItem });
-            inputHandlerSelector.Name = "inputHandlerSelector";
-            inputHandlerSelector.Size = new Size(72, 20);
-            inputHandlerSelector.Text = "Controller";
-            inputHandlerSelector.Click += toolStripMenuItem1_Click;
+            inputMethodMenu = new ToolStripMenuItem();
+            inputMethodMenu.DropDownItems.AddRange(new ToolStripItem[] { xinputMenuItem, directInputMenuItem });
+            inputMethodMenu.Name = "inputMethodMenu";
+            inputMethodMenu.Size = new Size(72, 20);
+            inputMethodMenu.Text = "Controller";
+            inputMethodMenu.Click += inputMethodMenuItem_Click;
             // 
             // xinputMenuItem
             // 
@@ -189,12 +189,28 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { About, inputHandlerSelector, gameTypeSelector });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { About, inputMethodMenu, gameTypeSelector });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(718, 24);
             menuStrip1.TabIndex = 9;
             menuStrip1.Text = "menuStrip1";
+            // 
+            // About
+            // 
+            About.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            About.DropDownItems.AddRange(new ToolStripItem[] { preferencesToolStripMenuItem });
+            About.Name = "About";
+            About.Size = new Size(37, 20);
+            About.Text = "File";
+            About.Click += About_Click;
+            // 
+            // preferencesToolStripMenuItem
+            // 
+            preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            preferencesToolStripMenuItem.Size = new Size(135, 22);
+            preferencesToolStripMenuItem.Text = "Preferences";
+            preferencesToolStripMenuItem.Click += preferencesToolStripMenuItem_Click;
             // 
             // gameTypeSelector
             // 
@@ -206,17 +222,8 @@
             // streetFighterToolStripMenuItem
             // 
             streetFighterToolStripMenuItem.Name = "streetFighterToolStripMenuItem";
-            streetFighterToolStripMenuItem.Size = new Size(180, 22);
+            streetFighterToolStripMenuItem.Size = new Size(144, 22);
             streetFighterToolStripMenuItem.Text = "Street Fighter";
-            // 
-            // About
-            // 
-            About.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            About.DropDownItems.AddRange(new ToolStripItem[] { preferencesToolStripMenuItem });
-            About.Name = "About";
-            About.Size = new Size(37, 20);
-            About.Text = "File";
-            About.Click += About_Click;
             // 
             // button1
             // 
@@ -307,13 +314,6 @@
             directNeutralLabel.TabIndex = 18;
             directNeutralLabel.Text = "Set Neutral position (DirectInput Only)";
             // 
-            // preferencesToolStripMenuItem
-            // 
-            preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            preferencesToolStripMenuItem.Size = new Size(180, 22);
-            preferencesToolStripMenuItem.Text = "Preferences";
-            preferencesToolStripMenuItem.Click += preferencesToolStripMenuItem_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -364,7 +364,7 @@
         private Button buttonDown;
         private Button buttonDownRight;
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem inputHandlerSelector;
+        private ToolStripMenuItem inputMethodMenu;
         private ToolStripMenuItem xinputMenuItem;
         private ToolStripMenuItem directInputMenuItem;
         private ToolStripMenuItem gameTypeSelector;
